@@ -305,15 +305,12 @@ psi2p_log=function(psi_vec,nam,nodemat){
   return(leafp)
 }
 
-# transform OTU counts to node counts (without nodemat, not very effective)
-# INPUT:
-# seqtab -- OTU table
-# tree -- phylogenetic tree
-# preorder -- whether the OTUs are ordered according to the preorder traversal of the tree
-# OUTPUT:
-# Y -- {y(A): A is internal node}, nodes are ordered according to the preorder traversal of the tree
-# YL -- {y(A_l): A is internal node}, nodes are ordered according to the preorder traversal of the tree
-library(data.tree)
+#' transform OTU counts to node counts (without nodemat, not very effective)
+#' @param seqtab OTU table
+#' @param tree -- phylogenetic tree
+#' @param preorder -- whether the OTUs are ordered according to the preorder traversal of the tree
+#' @return Y -- {y(A): A is internal node}, nodes are ordered according to the preorder traversal of the tree
+#' @return YL -- {y(A_l): A is internal node}, nodes are ordered according to the preorder traversal of the tree
 seqtab2y=function(seqtab,tree,preorder=F){
   K=length(tree$tip.label)
   tree$node.label=as.character((K+1):(2*K-1)) # must have non-empty node labels, otherwise 'data.tree::as.Node' does not work
@@ -330,12 +327,9 @@ seqtab2y=function(seqtab,tree,preorder=F){
   return(list(Y=Y,YL=YL))
 }
 
-# INPUT:
-# cnt -- a row of OTU table, must be pre-order!
-# tree -- phylogenetic tree
-# OUTPUT:
-# Y -- {y(A): A is internal node}, nodes are ordered according to the preorder traversal of the tree
-# YL -- {y(A_l): A is internal node}, nodes are ordered according to the preorder traversal of the tree
+#' count vector to y and yl
+#' @param cnt a row of OTU table (preorder)
+#' @param tree phylogenetic tree
 count2y=function(cnt,tree){
   K=length(tree$tip.label)
   tree$node.label=as.character((K+1):(2*K-1)) # must have non-empty node labels, otherwise 'data.tree::as.Node' does not work
