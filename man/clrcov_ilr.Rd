@@ -2,8 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{clrcov_ilr}
 \alias{clrcov_ilr}
-\title{evaluate clrcov when ILR(p) ~ MVN(mu,sig)
-INPUT:}
+\title{evaluate clrcov when ILR(p) ~ MVN(mu,sig)}
 \usage{
 clrcov_ilr(tree, mu, sig)
 }
@@ -16,5 +15,4 @@ clrcov_ilr(tree, mu, sig)
 }
 \description{
 evaluate clrcov when ILR(p) ~ MVN(mu,sig)
-INPUT:
 }

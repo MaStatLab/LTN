@@ -424,7 +424,6 @@ nodeX=function(j,Y,YL){
 
 
 #' evaluate clrcov when ILR(p) ~ MVN(mu,sig)
-#' INPUT:
 #' @param tree has to have node labels
 #' @param mu mean(preorder)
 #' @param sig covariance (preorder)
