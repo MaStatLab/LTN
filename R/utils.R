@@ -421,10 +421,13 @@ nodeX=function(j,Y,YL){
   return(cbind(yl,yr))
 }
 
-# evaluate clrcov when ILR(p) ~ MVN(mu,sig)
-# INPUT:
-# tree: has to have node labels
-# mu, sig: preorder
+
+
+#' evaluate clrcov when ILR(p) ~ MVN(mu,sig)
+#' INPUT:
+#' @param tree has to have node labels
+#' @param mu mean(preorder)
+#' @param sig covariance (preorder)
 clrcov_ilr=function(tree,mu,sig){
   p=length(mu)
   K=p+1
@@ -440,3 +443,7 @@ clrcov_ilr=function(tree,mu,sig){
     return(NA)
   }
 }
+
+
+
+
