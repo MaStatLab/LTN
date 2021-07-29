@@ -311,6 +311,7 @@ psi2p_log=function(psi_vec,nam,nodemat){
 #' @param preorder -- whether the OTUs are ordered according to the preorder traversal of the tree
 #' @return Y -- {y(A): A is internal node}, nodes are ordered according to the preorder traversal of the tree
 #' @return YL -- {y(A_l): A is internal node}, nodes are ordered according to the preorder traversal of the tree
+#' @export
 seqtab2y=function(seqtab,tree,preorder=F){
   K=length(tree$tip.label)
   tree$node.label=as.character((K+1):(2*K-1)) # must have non-empty node labels, otherwise 'data.tree::as.Node' does not work
@@ -365,6 +366,7 @@ dm_mom=function(X){
   vhat=1/thetahat-1
   return(list(pihat=pihat,thetahat=thetahat,vhat=vhat))
 }
+#' @export
 dtm_sim=function(nsim,tree,theta,tau,total){
   p=length(theta)
   Y=matrix(0,nsim,p)
@@ -385,6 +387,7 @@ dtm_sim=function(nsim,tree,theta,tau,total){
   }
   return(list(Y=Y,YL=YL,cnt=cnt))
 }
+#' @export
 node_binom=function(x) {
   leftchild=names(x$children[1])
   rightchild=names(x$children[2])
@@ -395,6 +398,7 @@ node_binom=function(x) {
   xr$y<-x$y-x$yl
 }
 # MoM estimate of DTM at each node
+#' @export
 dtm_mom=function(cnt,tree,add_pseudo=T){
   if (add_pseudo){
     cnt[cnt==0]=0.5
@@ -416,6 +420,7 @@ nodeX=function(j,Y,YL){
   #' @param j index
   #' @param Y y(A)
   #' @param YL y(Al)
+  #' @export
   yl=YL[,j]
   yr=Y[,j]-YL[,j]
   return(cbind(yl,yr))
