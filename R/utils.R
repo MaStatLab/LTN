@@ -415,6 +415,11 @@ dtm_mom=function(cnt,tree,add_pseudo=T){
   tauhat=do.call(c,lapply(est, function(x){x[[3]]}))
   return(list(thetahat=thetahat,tauhat=tauhat))
 }
+
+#' helper function
+#' @param j index
+#' @param Y y(A)
+#' @param YL y(Al)
 nodeX=function(j,Y,YL){
   yl=YL[,j]
   yr=Y[,j]-YL[,j]
