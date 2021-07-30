@@ -1,4 +1,6 @@
 
+#' clr covariance of compositions generated from DTM
+#' @export
 clrcov_dtm_sim_log=function(nsim,tree,theta,tau,SSS=1,savesamp=F,dir=NULL){
   set.seed(SSS)
   p=length(theta)
@@ -27,12 +29,16 @@ clrcov_dtm_sim_log=function(nsim,tree,theta,tau,SSS=1,savesamp=F,dir=NULL){
     saveRDS(list(logtheta=logTHETA,leafp=LEAFP),dir)}
   return(stats::cov(gamma_mat))
 }
+
 theta2p_log=function(theta_vec,nam,nodemat){
   nodep=c(theta_vec,VGAM::log1mexp(-theta_vec),0)
   names(nodep)=nam
   leafp=apply(nodemat,1,function(x){sum(nodep[x])})
   return(leafp)
 }
+
+#' clr covariance of compositions generated from DTM
+#' @export
 clrcov_sim=function(mu,sigma,tree,iter){
   rt=data.tree::as.Node(tree)
   K=length(tree$tip.label)
@@ -55,12 +61,16 @@ clrcov_sim=function(mu,sigma,tree,iter){
   gamma_mat=t(apply(LEAFP,2,function(x){log(x)-(1/K)*(sum(log(x)))}))
   return(stats::cov(gamma_mat))
 }
+
 psi2p=function(psi_vec,nam,nodemat){
   nodep=c(stats::plogis(psi_vec),1-stats::plogis(psi_vec),1)
   names(nodep)=nam
   leafp=apply(nodemat,1,function(x){prod(nodep[x])})
   return(leafp)
 }
+
+#' matrix loss
+#' @export
 matloss=function(diff){
   frob=sqrt(sum(diff^2))
   l1=max(colSums(abs(diff)))
@@ -68,14 +78,20 @@ matloss=function(diff){
   spec=norm(diff,'2')
   return(c(frob,l1,linf,spec))
 }
+
+#' add 0.5 pseudo count
+#' @export
 add_pseudo=function(mat){
   mat[which(mat==0)]=0.5
   return(mat)
 }
+
+
 clrcov_sample=function(cnt){
   clrX=t(apply(cnt,1,function(x){log(x)-sum(log(x))/ncol(cnt)}))
   return(stats::cov(clrX))
 }
+
 node_binom=function(x) {
   leftchild=names(x$children[1])
   rightchild=names(x$children[2])
@@ -85,7 +101,11 @@ node_binom=function(x) {
   xr=x[[rightchild]]
   xr$y<-x$y-x$yl
 }
-# theta and tau should be ordered in the same way as pre-ordered internal nodes
+
+#' generate data from DTM
+#' @param theta DTM mean, preorder
+#' @param tau DTM dispersion parameter, preorder
+#' @export
 dtm_sim=function(nsim,tree,theta,tau,total){
   p=length(theta)
   Y=matrix(0,nsim,p)
@@ -106,6 +126,7 @@ dtm_sim=function(nsim,tree,theta,tau,total){
   }
   return(list(Y=Y,YL=YL,cnt=cnt))
 }
+
 leaf2nodeprob=function(leafprob,tree){
   rt=data.tree::as.Node(tree)
   rt$Set(prob=leafprob,filterFun=data.tree::isLeaf,traversal = "pre-order")
@@ -121,6 +142,7 @@ leaf2nodeprob=function(leafprob,tree){
   left_prob=rt$Get('leftprob', traversal = "pre-order", filterFun=data.tree::isNotLeaf)
   return(list(node_prob=node_prob,left_prob=left_prob))
 }
+
 gibbs_glasso_cnt=function(niter,cnt,tree,r=1,s=0.01,SSS=1){
   #initialization
   set.seed(SSS)
@@ -261,6 +283,8 @@ gibbs_glasso_cnt=function(niter,cnt,tree,r=1,s=0.01,SSS=1){
   return(list(OMEGA=OMEGA,LAM=LAM,MU=MU))
 }
 
+#' clr covariance of compositions generated from LTN(mu,sigma)
+#' @export
 clrcov_sim_log=function(mu,sigma,tree,iter,savesamp=F,dir=NULL){
   rt=data.tree::as.Node(tree)
   K=length(tree$tip.label)
@@ -298,6 +322,9 @@ rbeta_log=function(nmc,a,b){
   }
   return(log(y))
 }
+
+#' transform log-odds to compositions
+#' @export
 psi2p_log=function(psi_vec,nam,nodemat){
   nodep=c(psi_vec-log(1+exp(psi_vec)),log(1-stats::plogis(psi_vec)),0)
   names(nodep)=nam
@@ -348,12 +375,15 @@ count2y=function(cnt,tree){
   YL=rt$Get('yl', traversal = "pre-order", filterFun=data.tree::isNotLeaf)
   return(list(Y=Y,YL=YL))
 }
-# MoM estimate of Dirichlet Multinomial:
-# X_i|q_i ~ Multi(N_i,q_i)
-# q_i ~ Dir(v*pi)
-# \theta=1/(1+v)
-# INPUT:
-# X: n samples * K categories counts. For beta-binomials in DTM, K=2.
+
+
+#' MoM estimate of Dirichlet Multinomial
+#' X_i|q_i ~ Multi(N_i,q_i)
+#' q_i ~ Dir(v*pi)
+#' theta=1/(1+v)
+#' For beta-binomials in DTM, K=2
+#' @param X n samples * K categories counts
+#' @export
 dm_mom=function(X){
   n=nrow(X)
   K=ncol(X)
@@ -397,7 +427,8 @@ node_binom=function(x) {
   xr=x[[rightchild]]
   xr$y<-x$y-x$yl
 }
-# MoM estimate of DTM at each node
+
+#' MoM estimate of DTM at each node
 #' @export
 dtm_mom=function(cnt,tree,add_pseudo=T){
   if (add_pseudo){
@@ -414,13 +445,7 @@ dtm_mom=function(cnt,tree,add_pseudo=T){
   return(list(thetahat=thetahat,tauhat=tauhat))
 }
 
-
 nodeX=function(j,Y,YL){
-  #' helper function
-  #' @param j index
-  #' @param Y y(A)
-  #' @param YL y(Al)
-  #' @export
   yl=YL[,j]
   yr=Y[,j]-YL[,j]
   return(cbind(yl,yr))
@@ -432,6 +457,7 @@ nodeX=function(j,Y,YL){
 #' @param tree has to have node labels
 #' @param mu mean(preorder)
 #' @param sig covariance (preorder)
+#' @export
 clrcov_ilr=function(tree,mu,sig){
   p=length(mu)
   K=p+1
