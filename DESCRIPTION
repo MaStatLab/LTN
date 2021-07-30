@@ -20,6 +20,10 @@ Imports:
     LaplacesDemon,
     mvtnorm,
     philr,
+    phyloseq,
     statmod,
     stats,
     VGAM
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

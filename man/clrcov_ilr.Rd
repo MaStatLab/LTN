@@ -7,7 +7,7 @@
 clrcov_ilr(tree, mu, sig)
 }
 \arguments{
-\item{tree}{has to have node labels}
+\item{tree}{phylogenetic tree, has to have node labels}
 
 \item{mu}{mean(preorder)}
 

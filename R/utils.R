@@ -332,6 +332,8 @@ psi2p_log=function(psi_vec,nam,nodemat){
   return(leafp)
 }
 
+
+
 #' transform OTU counts to node counts (without nodemat, not very effective)
 #' @param seqtab OTU table
 #' @param tree -- phylogenetic tree
