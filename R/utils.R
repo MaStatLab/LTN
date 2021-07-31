@@ -540,6 +540,60 @@ make_data=function(ps,test_var,test_baseline,formula_covariates,sub_var){
   return(list(cnt=cnt,Xtest=Xtest,Xadjust=Xadjust,grouplabel=sub_id,g=G,tree=tree))
 }
 
+#' plot PMAPs along the tree
+#' @param pmap vector of PMAPs
+#' @param tree phylogenetic tree
+#' @param main.text title
+#' @param alpha (optional) posterior mean of alpha
+#' @param label labels of internal nodes
+#' @param label_nodes a set of k nodes to be labelled by A1, ..., Ak
+#' @export
+plot_pmap=function(pmap,tree,main.text,alpha=NULL,label=NULL,label_nodes=NULL){
+  col_Pal=grDevices::colorRampPalette(c('white', 'red'))
+  graphics::layout(t(1:2), widths=c(96,4))
+  graphics::par(mar=rep(0.5, 4), oma=rep(4, 4), las=1)
+  K=length(tree$tip.label)
+  node_col = col_Pal(500)[as.numeric(cut(c((pmap),0,1), breaks = 500)) ]
+  graphics::plot(tree,main='',show.node.label=FALSE,direction="downwards",show.tip.label = FALSE,cex.main=1,use.edge.length=F,align.tip.label=T,node.depth=2)
+  graphics::mtext(main.text,side=3,cex=2.5)
+  ape::nodelabels(bg=node_col,frame='none',cex=3,pch=21,col ='black')
+  if (!is.null(label)){
+    ape::nodelabels(text=label,frame='none',cex=0.8)
+  }
+  if (!is.null(label_nodes) & is.null(label)){
+    label=rep('',K-1)
+    label[label_nodes]=paste0('A',1:length(label_nodes))
+    ape::nodelabels(text=label,frame='none',cex=0.8)
+  }
+  if (!is.null(alpha)){
+    edges=data.frame(tree$edge)
+    edges$leftSign=''
+    edges$rightSign=''
+    leftBranch=sapply((K+1):(2*K-1),function(n){min(which(edges[,1]==n))})
+    rightBranch=sapply((K+1):(2*K-1),function(n){max(which(edges[,1]==n))})
+    edges[leftBranch,'leftSign']=c('-','+')[as.numeric(alpha>0)+1]
+    edges[rightBranch,'rightSign']=c('-','+')[as.numeric(alpha<0)+1]
+    ape::edgelabels(text=edges$leftSign,frame='none',cex=1,adj = 1)
+    ape::edgelabels(text=edges$rightSign,frame='none',cex=1,adj = -0.3)
+  }
+  legend_image <- grDevices::as.raster(matrix(col_Pal(500), ncol=1))
+  graphics::image(z=t(1:500), col=legend_image, axes=FALSE)
+  graphics::mtext('PMAP',side=3,cex=1)
+  graphics::axis(side=4,cex.axis=0.8,tick=T)
+  # check sign
+  lr=sapply((K+1):(2*K-1),function(n){which(edges[,1]==n)})
+  try( if (!all(apply(lr, 2, function(x){edges[x[1],'leftSign']!=edges[x[2],'rightSign'] & edges[x[1],'leftSign']!='' & edges[x[2],'rightSign']!=''}))) stop("inconsistent left and right sign")) #left and right sign being exactly opposite
+  alpha_sign=c('-','+')[as.numeric(alpha>0)+1]
+  try(if (!all(sapply(1:length(alpha), function(x) {
+    alpha_sign[x] == edges[which(edges[, 1] == x + K)[1], 'leftSign']
+  })))
+    stop(paste0('inconsistent left and node sign', which((
+      sapply(1:length(alpha), function(x) {
+        alpha_sign[x] != edges[which(edges[, 1] == x + K)[1], 'leftSign']
+      })
+    )),'\n')))
+  # left sign same as alpha sign
+}
 
 
 

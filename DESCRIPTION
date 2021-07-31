@@ -17,6 +17,8 @@ Imports:
     ape,
     BayesLogit,
     data.tree,
+    graphics,
+    grDevices,
     LaplacesDemon,
     mvtnorm,
     philr,
