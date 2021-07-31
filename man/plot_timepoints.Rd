@@ -12,7 +12,8 @@ plot_timepoints(
   shape,
   facet_by,
   shape_values = NULL,
-  color_values = NULL
+  color_values = NULL,
+  color_gradientn = NULL
 )
 }
 \arguments{
