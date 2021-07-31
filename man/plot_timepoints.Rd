@@ -4,7 +4,16 @@
 \alias{plot_timepoints}
 \title{time series plot}
 \usage{
-plot_timepoints(data, x, y, color, shape, facet_by)
+plot_timepoints(
+  data,
+  x,
+  y,
+  color,
+  shape,
+  facet_by,
+  shape_values = NULL,
+  color_values = NULL
+)
 }
 \arguments{
 \item{data}{data.frame}

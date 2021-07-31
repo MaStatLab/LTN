@@ -18,6 +18,7 @@ Imports:
     BayesLogit,
     data.tree,
     ggplot2,
+    ggplotify,
     graphics,
     grDevices,
     grid,

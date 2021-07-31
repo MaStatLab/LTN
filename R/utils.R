@@ -599,8 +599,14 @@ plot_pmap=function(pmap,tree,main.text,alpha=NULL,label=NULL,label_nodes=NULL){
 #' @param data data.frame
 #' @param facet_by subject-level binary variable
 #' @export
-plot_timepoints=function(data,x,y,color,shape,facet_by){
+plot_timepoints=function(data,x,y,color,shape,facet_by,shape_values=NULL,color_values=NULL){
   g=ggplot2::ggplot(data,ggplot2::aes_string(x=x,y=y,color=color,shape=shape))+ggplot2::geom_point()+ggplot2::theme_bw()+ggplot2::facet_wrap(stats::as.formula(paste0('~',facet_by)),nrow=2,scales='free_y',strip.position='left')
+  if(!is.null(shape_values)){
+    g=g+scale_shape_manual(values=shape_values)
+  }
+  if(!is.null(color_values)){
+    g=g+scale_color_manual(values=color_values)
+  }
   gt = ggplot2::ggplot_gtable(ggplot2::ggplot_build(g))
   n_ind=rowSums(table(as.matrix(data[,facet_by]),as.matrix(data[,y]))!=0)
   gt$heights[11]=n_ind[2]/n_ind[1]*gt$heights[7]
