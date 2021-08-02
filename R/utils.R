@@ -582,7 +582,20 @@ plot_pmap=function(pmap,tree,main.text,alpha=NULL,label=NULL,label_nodes=NULL){
   graphics::axis(side=4,cex.axis=0.8,tick=T)
   # check sign
   lr=sapply((K+1):(2*K-1),function(n){which(edges[,1]==n)})
-  try( if (!all(apply(lr, 2, function(x){edges[x[1],'leftSign']!=edges[x[2],'rightSign'] & edges[x[1],'leftSign']!='' & edges[x[2],'rightSign']!=''}))) stop("inconsistent left and right sign")) #left and right sign being exactly opposite
+  try(if (!all(apply(lr, 2, function(x) {
+    edges[x[1], 'leftSign'] != edges[x[2], 'rightSign'] &
+      edges[x[1], 'leftSign'] != '' &
+      edges[x[2], 'rightSign'] != ''
+  })))
+    stop(paste0("inconsistent left and right sign",which((
+      !(apply(lr, 2, function(x) {
+        edges[x[1], 'leftSign'] != edges[x[2], 'rightSign'] &
+          edges[x[1], 'leftSign'] != '' &
+          edges[x[2], 'rightSign'] != ''
+      })
+    )),'\n'
+    ))))
+  #left and right sign being exactly opposite
   alpha_sign=c('-','+')[as.numeric(alpha>0)+1]
   try(if (!all(sapply(1:length(alpha), function(x) {
     alpha_sign[x] == edges[which(edges[, 1] == x + K)[1], 'leftSign']
