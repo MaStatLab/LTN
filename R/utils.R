@@ -573,6 +573,12 @@ plot_pmap=function(pmap,tree,main.text,alpha=NULL,label=NULL,label_nodes=NULL){
     rightBranch=sapply((K+1):(2*K-1),function(n){max(which(edges[,1]==n))})
     edges[leftBranch,'leftSign']=c('-','+')[as.numeric(alpha>0)+1]
     edges[rightBranch,'rightSign']=c('-','+')[as.numeric(alpha<0)+1]
+    for (j in seq_along(alpha)){
+      if (alpha[j]==0){
+        edges[leftBranch[j],'leftSign']=''
+        edges[rightBranch[j],'rightSign']=''
+      }
+    }
     ape::edgelabels(text=edges$leftSign,frame='none',cex=1,adj = 1)
     ape::edgelabels(text=edges$rightSign,frame='none',cex=1,adj = -0.3)
   }
@@ -582,21 +588,27 @@ plot_pmap=function(pmap,tree,main.text,alpha=NULL,label=NULL,label_nodes=NULL){
   graphics::axis(side=4,cex.axis=0.8,tick=T)
   # check sign
   lr=sapply((K+1):(2*K-1),function(n){which(edges[,1]==n)})
-  try(if (!all(apply(lr, 2, function(x) {
-    edges[x[1], 'leftSign'] != edges[x[2], 'rightSign'] &
+  try(if (!all(apply(rbind(lr,alpha), 2, function(x) {
+    (edges[x[1], 'leftSign'] != edges[x[2], 'rightSign'] &
       edges[x[1], 'leftSign'] != '' &
-      edges[x[2], 'rightSign'] != ''
+      edges[x[2], 'rightSign'] != '')|
+      (edges[x[1], 'leftSign'] == edges[x[2], 'rightSign'] &
+       edges[x[1], 'leftSign'] ==''&
+       x[3]==0)
   })))
-    stop(paste0("inconsistent left and right sign",which((
-      !(apply(lr, 2, function(x) {
-        edges[x[1], 'leftSign'] != edges[x[2], 'rightSign'] &
-          edges[x[1], 'leftSign'] != '' &
-          edges[x[2], 'rightSign'] != ''
+    stop(paste0("inconsistent left and right sign", which(!(
+      apply(rbind(lr,alpha), 2, function(x) {
+        (edges[x[1], 'leftSign'] != edges[x[2], 'rightSign'] &
+           edges[x[1], 'leftSign'] != '' &
+           edges[x[2], 'rightSign'] != '')|
+          (edges[x[1], 'leftSign'] == edges[x[2], 'rightSign'] &
+             edges[x[1], 'leftSign'] ==''&
+             x[3]==0)
       })
-    )),'\n'
-    ))))
+    )), '\n')))
   #left and right sign being exactly opposite
   alpha_sign=c('-','+')[as.numeric(alpha>0)+1]
+  alpha_sign[alpha==0]=''
   try(if (!all(sapply(1:length(alpha), function(x) {
     alpha_sign[x] == edges[which(edges[, 1] == x + K)[1], 'leftSign']
   })))
