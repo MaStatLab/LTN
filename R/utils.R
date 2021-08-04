@@ -551,19 +551,19 @@ make_data=function(ps,test_var,test_baseline,formula_covariates,sub_var){
 plot_pmap=function(pmap,tree,main.text,alpha=NULL,label=NULL,label_nodes=NULL){
   col_Pal=grDevices::colorRampPalette(c('white', 'red'))
   graphics::layout(t(1:2), widths=c(96,4))
-  graphics::par(mar=rep(0.5, 4), oma=rep(4, 4), las=1)
+  graphics::par(mar=rep(0.5, 4), oma=c(1,0.5,2,2), las=1)
   K=length(tree$tip.label)
   node_col = col_Pal(500)[as.numeric(cut(c((pmap),0,1), breaks = 500)) ]
   graphics::plot(tree,main='',show.node.label=FALSE,direction="downwards",show.tip.label = FALSE,cex.main=1,use.edge.length=F,align.tip.label=T,node.depth=2)
   graphics::mtext(main.text,side=3,cex=2.5)
   ape::nodelabels(bg=node_col,frame='none',cex=3,pch=21,col ='black')
   if (!is.null(label)){
-    ape::nodelabels(text=label,frame='none',cex=0.8)
+    ape::nodelabels(text=label,frame='none',cex=1.2)
   }
   if (!is.null(label_nodes) & is.null(label)){
     label=rep('',K-1)
     label[label_nodes]=paste0('A',1:length(label_nodes))
-    ape::nodelabels(text=label,frame='none',cex=0.8)
+    ape::nodelabels(text=label,frame='none',cex=1.2)
   }
   if (!is.null(alpha)){
     edges=data.frame(tree$edge)
@@ -579,8 +579,8 @@ plot_pmap=function(pmap,tree,main.text,alpha=NULL,label=NULL,label_nodes=NULL){
         edges[rightBranch[j],'rightSign']=''
       }
     }
-    ape::edgelabels(text=edges$leftSign,frame='none',cex=1,adj = 1)
-    ape::edgelabels(text=edges$rightSign,frame='none',cex=1,adj = -0.3)
+    ape::edgelabels(text=edges$leftSign,frame='none',cex=1.2,adj = 1)
+    ape::edgelabels(text=edges$rightSign,frame='none',cex=1.2,adj = -0.2)
   }
   legend_image <- grDevices::as.raster(matrix(col_Pal(500), ncol=1))
   graphics::image(z=t(1:500), col=legend_image, axes=FALSE)
@@ -624,8 +624,8 @@ plot_pmap=function(pmap,tree,main.text,alpha=NULL,label=NULL,label_nodes=NULL){
 #' @param data data.frame
 #' @param facet_by subject-level binary variable
 #' @export
-plot_timepoints=function(data,x,y,color,shape,facet_by,shape_values=NULL,color_values=NULL,color_gradientn=NULL){
-  g=ggplot2::ggplot(data,ggplot2::aes_string(x=x,y=y,color=color,shape=shape))+ggplot2::geom_point()+ggplot2::theme_bw()+ggplot2::facet_wrap(stats::as.formula(paste0('~',facet_by)),nrow=2,scales='free_y',strip.position='left')
+plot_timepoints=function(data,x,y,color,shape,facet_by,shape_values=NULL,color_values=NULL,color_gradientn=NULL,xlab,ylab,color_labs,shape_labs){
+  g=ggplot2::ggplot(data,ggplot2::aes_string(x=x,y=y,color=color,shape=shape))+ggplot2::geom_point()+ggplot2::theme_bw()+ggplot2::facet_wrap(stats::as.formula(paste0('~',facet_by)),nrow=2,scales='free_y',strip.position='left')+ggplot2::xlab(xlab)+ggplot2::ylab(ylab)+ggplot2::labs(color=color_labs,shape=shape_labs)
   if(!is.null(shape_values)){
     g=g+ggplot2::scale_shape_manual(values=shape_values)
   }
@@ -640,5 +640,7 @@ plot_timepoints=function(data,x,y,color,shape,facet_by,shape_values=NULL,color_v
   gt$heights[11]=n_ind[2]/n_ind[1]*gt$heights[7]
   grid::grid.draw(gt)
 }
+
+
 
 
