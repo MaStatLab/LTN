@@ -5,5 +5,8 @@ test_that("consistent sign in plot_pmap()", {
     alpha=stats::rnorm(9)
     e=plot_pmap(pmap,tree,'main',alpha=alpha,label_nodes = which(pmap>0.5))
     expect_identical(e,NULL)
+    pmap=rep(0,9)
+    e=plot_pmap(pmap,tree,'main',alpha=alpha,label_nodes = which(pmap>0.5))
+    expect_identical(e,NULL)
   }
 })

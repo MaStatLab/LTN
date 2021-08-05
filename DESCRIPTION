@@ -22,7 +22,6 @@ Imports:
     graphics,
     grDevices,
     grid,
-    LaplacesDemon,
     mvtnorm,
     philr,
     phyloseq,
