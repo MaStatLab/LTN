@@ -1,7 +1,7 @@
 #' LTN-based mixed-effects model
 #' @param reffcov 1: diagonal, 2: sparse
 #' @param pnull prior probability of the null hypothesis
-#' @param pi_only whether to return posterior samples of only pi and alpha
+#' @param save_alpha_only whether to return posterior samples of only alpha(A)
 #' @export
 ltnme = function(formula,
                  data,
@@ -9,7 +9,7 @@ ltnme = function(formula,
                  niter,
                  reffcov = 2,
                  SEED = 1,
-                 pi_only = F,
+                 save_alpha_only = F,
                  gprior_m = 100,
                  pnull = 0.5,
                  lambda = 10) {
@@ -31,29 +31,39 @@ ltnme = function(formula,
   N=nrow(Y)
   p=ncol(Y)
   K=p+1
-  return(gibbs_crossgroup(N=N,
-                              p=p,
-                              g = g,
-                              r=0,
-                              YL=YL,
-                              Y=Y,
-                              Xtest=Xtest,
-                              Xadjust = Xadjust,
-                              grouplabel = grouplabel,
-                              c0 = 1,
-                              d0 = 0.001,
-                              c1 = 1,
-                              d1 = 0.001,
-                              nu = 3,
-                              niter=niter,
-                              adjust = adjust,
-                              reff = T,
-                              reffcov = reffcov,
-                              SEED = SEED,
-                              pi_only = pi_only,
-                              gprior_m = gprior_m,
-                              pnull = pnull,
-                              lambda_fixed=lambda))
+  gibbs=gibbs_crossgroup(N=N,
+                         p=p,
+                         g = g,
+                         r=0,
+                         YL=YL,
+                         Y=Y,
+                         Xtest=Xtest,
+                         Xadjust = Xadjust,
+                         grouplabel = grouplabel,
+                         c0 = 1,
+                         d0 = 0.001,
+                         c1 = 1,
+                         d1 = 0.001,
+                         nu = 3,
+                         niter=niter,
+                         adjust = adjust,
+                         reff = T,
+                         reffcov = reffcov,
+                         SEED = SEED,
+                         save_alpha_only = save_alpha_only,
+                         gprior_m = gprior_m,
+                         pnull = pnull,
+                         lambda_fixed=lambda)
+  BETA1=lapply(gibbs$BETA1,function(x){as.vector(x)})
+  BETAMAT1=do.call(rbind,BETA1)
+  pmap=matrix(apply(BETAMAT1[(niter/2):niter,],2,function(x){sum(x!=0)})/(niter/2+1),nrow = 1)
+  pjap=1-sum(rowSums(BETAMAT1[(niter/2):niter,]!=0)==0)/(niter/2+1)
+  alpha_mean=apply(BETAMAT1[(niter/2):niter,],2,mean)
+  gibbs$ALPHA=gibbs$BETA1
+  gibbs$BETA=gibbs$BETA2
+  rmpara=c('BETA1','Z','ACC1','ACC2','A1','A2','TAU','PHI')
+  gibbs[rmpara]=NULL
+  return(list(gibbs_samples=gibbs,PJAP=pjap,PMAP=pmap,alpha_mean=alpha_mean))
 }
 
 

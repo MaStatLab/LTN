@@ -10,7 +10,7 @@
 # c0,d0,c1,d1,nu -- hyperparameters
 # niter -- number of Gibbs iterations
 # SEED -- random seed for initialization
-# pi_only -- T/F, whether to only save pi AND beta1. If T, will save huge amount of memory.
+# save_alpha_only -- T/F, whether to only save alpha. If T, will save huge amount of memory.
 # gprior_m -- Var(beta2)=mN(X^TX)^-1, gprior_m=1 implies unit information prior
 # OUTPUT:
 # **All in the same order as nodes**
@@ -55,7 +55,7 @@ gibbs_crossgroup = function(N,
                             reff = F,
                             reffcov = 1,
                             SEED = 1,
-                            pi_only = F,
+                            save_alpha_only = F,
                             gprior_m = 1,
                             pnull = 0.5,
                             a1=3,
@@ -193,7 +193,7 @@ gibbs_crossgroup = function(N,
         return(t(mvtnorm::rmvnorm(1, m, Clist[[l]])))
       })
       gam = do.call(cbind, gamlist) # p*g
-      if (!pi_only) {
+      if (!save_alpha_only) {
         GAM[[it]] = gam
       }
     }
@@ -248,13 +248,13 @@ gibbs_crossgroup = function(N,
     psi = apply(mc, 2, function(x) {
       mvtnorm::rmvnorm(1, x[1:p], diag(x[-(1:p)]))
     }) # p*N
-    if (!pi_only) {
+    if (!save_alpha_only) {
       PSI[[it]] = t(psi)
     }
     # update wpg
     wpg = mapply(rpg0, Y, psi) # vec(wpg)
     wpg = matrix(wpg, ncol = N, nrow = p)
-    if (!pi_only) {
+    if (!save_alpha_only) {
       WPG[[it]] = wpg
     }
     if (r > 0) {
@@ -266,7 +266,7 @@ gibbs_crossgroup = function(N,
         mvtnorm::rmvnorm(1, x, C)
       }) #r*N
       z = matrix(z, r, N)
-      if (!pi_only) {
+      if (!save_alpha_only) {
         Z[[it]] = t(z)
       }
       # update alpha
@@ -278,7 +278,7 @@ gibbs_crossgroup = function(N,
                                               X %*% beta[, j], ncol = 1)
         alpha[, j] = mvtnorm::rmvnorm(1, m, C)
       }
-      if (!pi_only) {
+      if (!save_alpha_only) {
         ALPHA[[it]] = alpha
       }
       # update phi (in the prior of alpha)
@@ -286,7 +286,7 @@ gibbs_crossgroup = function(N,
       phi = apply(gampara2, 1:2, function(x) {
         stats::rgamma(1, (nu + 1) / 2, x)
       })
-      if (!pi_only) {
+      if (!save_alpha_only) {
         PHI[[it]] = phi
       }
       # update tau
@@ -313,7 +313,7 @@ gibbs_crossgroup = function(N,
       }
       # tau = cumprod(delta)
       tau = exp(cumsum(log(delta)))
-      if (!pi_only) {
+      if (!save_alpha_only) {
         TAU = cbind(TAU, tau)
       }
       # update a1 with MH, proposal distr: prior
@@ -324,7 +324,7 @@ gibbs_crossgroup = function(N,
         u = stats::runif(1)
         if (u < acc) {
           a1 = at
-          if (!pi_only) {
+          if (!save_alpha_only) {
             ACC1[it] = 1
           }
         }
@@ -335,7 +335,7 @@ gibbs_crossgroup = function(N,
         u = stats::runif(1)
         if (u < acc) {
           a2 = at
-          if (!pi_only) {
+          if (!save_alpha_only) {
             ACC2[it] = 1
           }
         }
@@ -389,7 +389,7 @@ gibbs_crossgroup = function(N,
     beta2 = t(mvtnorm::rmvnorm(p, rep(0, q2), invXTX)) %*% diag(1 / sqrt(phi_eps +
                                                                   1 / N / gprior_m)) + m # q2*p
     beta2 = matrix(as.vector(beta2), nrow = q2)
-    if (!pi_only) {
+    if (!save_alpha_only) {
       BETA2[[it]] = beta2
     }
     beta = rbind(beta1, beta2)
@@ -406,7 +406,7 @@ gibbs_crossgroup = function(N,
     phi_pi = mapply(function(x, y) { stats::rgamma(1, x, y) }, t0 + nj_prime / 2, u0 +  sumbeta2)
     PHI_PI = cbind(PHI_PI, phi_pi)
   }
-  if (!pi_only) {
+  if (!save_alpha_only) {
     return(
       list(
         ALPHA = ALPHA,
@@ -430,7 +430,7 @@ gibbs_crossgroup = function(N,
       )
     )
   } else{
-    return(list(BETA1 = BETA1, PI1 = PI1))
+    return(list(BETA1 = BETA1))
   }
 }
 
