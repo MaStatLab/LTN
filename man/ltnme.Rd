@@ -11,7 +11,7 @@ ltnme(
   niter,
   reffcov = 2,
   SEED = 1,
-  pi_only = F,
+  save_alpha_only = F,
   gprior_m = 100,
   pnull = 0.5,
   lambda = 10
@@ -19,6 +19,10 @@ ltnme(
 }
 \arguments{
 \item{reffcov}{1: diagonal, 2: sparse}
+
+\item{save_alpha_only}{whether to return posterior samples of only alpha(A)}
+
+\item{pnull}{prior probability of the null hypothesis}
 }
 \description{
 LTN-based mixed-effects model

@@ -24,7 +24,7 @@ gibbs_crossgroup(
   reff = F,
   reffcov = 1,
   SEED = 1,
-  pi_only = F,
+  save_alpha_only = F,
   gprior_m = 1,
   pnull = 0.5,
   a1 = 3,
@@ -32,6 +32,9 @@ gibbs_crossgroup(
   a1a2 = "hp",
   lambda_fixed
 )
+}
+\arguments{
+\item{Y}{-- (numeric) N*p, pre-order}
 }
 \description{
 Gibbs sampler for cross-group comparison
