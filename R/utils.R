@@ -653,6 +653,7 @@ plot_timepoints=function(data,x,y,color,shape,facet_by,shape_values=NULL,color_v
 #' @param formula a one-sided lme4 type formula, where the first variable is the group being tested
 #' @param data a phyloseq object with an OTU table and a tree
 #' @param test_baseline which level of the groups to be used as baseline
+#' @export
 makeDataParser=function(formula,data,test_baseline){
   term=attributes(stats::terms(formula))$term.labels
   isRandomEffect=grepl("\\|",term)
@@ -660,7 +661,7 @@ makeDataParser=function(formula,data,test_baseline){
   if(sum(!isRandomEffect)==1){
     formula_covariates=NULL
   }else{
-      formula_covariates=paste0(term[!isRandomEffect][-1],collapse = '+')
+      formula_covariates=as.formula(paste0('~',paste0(term[!isRandomEffect][-1],collapse = '+')))
   }
   if (sum(isRandomEffect)>1){
     warning('More than one random effects. Used the first one.')

@@ -1,5 +1,8 @@
 #' LTN-based mixed-effects model
 #' @param reffcov 1: diagonal, 2: sparse
+#' @param pnull prior probability of the null hypothesis
+#' @param pi_only whether to return posterior samples of only pi and alpha
+#' @export
 ltnme = function(formula,
                  data,
                  test_baseline,

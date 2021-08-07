@@ -1,8 +1,8 @@
 
 #' Gibbs sampler for LTN
 #' @param data phyloseq object containing OTU table and phylogenetic tree
-#' @param Y matrix of y_i(A). Y and YL will be used if the phyloseq object is not provided
-#' @param YL matrix of y_i(A_l)
+#' @param Y (numeric) matrix of y_i(A). Y and YL will be used if the phyloseq object is not provided
+#' @param YL (numeric) matrix of y_i(A_l)
 #' @param niter number of Gibbs iterations
 #' @param SEED random seed used in initializing the sampler
 #' @param lambda shrinkage parameter in graphical lasso prior

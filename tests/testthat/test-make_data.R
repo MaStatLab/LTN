@@ -1,4 +1,4 @@
-test_that("multiplication works", {
+test_that("make_data works", {
   dietcovariates=c("BF","Solid_Food","Eggs","Fish","Soy_Prod","Rye","Barley","Buckwheat_Millet")
   data=make_data(ps_app,
                  'sero_cont',F,

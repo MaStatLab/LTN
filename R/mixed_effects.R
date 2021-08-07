@@ -3,7 +3,7 @@
 # p -- number of internal nodes
 # g -- number of levels of the random effect. e.g., if the random effect is individual, then g is number of individuals
 # r -- pre-specified number of factors. unwarranted feature.
-# YL, Y -- N*p, pre-order
+#' @param Y -- (numeric) N*p, pre-order
 # Xtest -- N*q1 design [matrix] of the covariate to test, q1 should be [the number of groups-1]. If do not -1, will have 2 beta's for a two-group comparison, and need to test the difference!
 # Xadjust -- N*q2 design [matrix] of the covariate to adjust, should include a column of 1's
 # refflabel -- vector of random effect labels with length g. For example, patient ID.
@@ -35,7 +35,7 @@
 #           Dunson (2011) requires a2>b2+1 where delta2~Ga(a2,b2), and a2>3,a1>2
 #           if a1a2=='hp', these values of a1,a2 here will not be used.
 # a1a2 -- hp: use Ga(2,1) hyperprior on a1,a2; fix: fix a1, a2
-
+#' @export
 gibbs_crossgroup = function(N,
                             p,
                             g = NULL,
@@ -63,7 +63,6 @@ gibbs_crossgroup = function(N,
                             a1a2='hp',
                             lambda_fixed) {
   # initialization
-  # cannot use rpg function on "integer" type parameters
   set.seed(SEED)
   Y = t(Y)
   YL = t(YL)
@@ -175,6 +174,7 @@ gibbs_crossgroup = function(N,
   ACC1 = rep(0, niter)
   ACC2 = rep(0, niter)
   for (it in 2:niter) {
+    print(it)
     if (reff) {
       # update gam
       if (reffcov == 1) {
