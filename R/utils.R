@@ -527,7 +527,10 @@ tax_tree=function(taxtab){
 #' make data for application
 #' @export
 make_data=function(ps,test_var,test_baseline,formula_covariates,sub_var){
-  cnt=phyloseq::otu_table(ps) # taxa are cols
+  cnt=phyloseq::otu_table(ps)
+  if (phyloseq::taxa_are_rows(ps)){
+    cnt=t(cnt)
+  }
   K=ncol(cnt)
   tree=phyloseq::phy_tree(ps)
   tree$node.label=as.character((K+1):(2*K-1))
@@ -639,6 +642,22 @@ plot_timepoints=function(data,x,y,color,shape,facet_by,shape_values=NULL,color_v
   n_ind=rowSums(table(as.matrix(data[,facet_by]),as.matrix(data[,y]))!=0)
   gt$heights[11]=n_ind[2]/n_ind[1]*gt$heights[7]
   grid::grid.draw(gt)
+}
+
+#' convert phyloseq object into the format of input of the LTN-based mixed-effects model sampler
+#' @param formula a one-sided lme4 type formula, where the first variable is the group being tested
+#' @param data a phyloseq object with an OTU table and a tree
+#' @param test_baseline which level of the groups to be used as baseline
+makeDataParser=function(formula,data,test_baseline){
+  term=attributes(stats::terms(formula))$term.labels
+  isRandomEffect=grepl("\\|",term)
+  test_var=term[1]
+  formula_covariates=paste0(term[!isRandomEffect],collapse = '+')
+  if (sum(isRandomEffect)>1){
+    warning('More than one random effects. Used the first one.')
+  }
+  sub_var=strsplit(term[isRandomEffect][1],split='\\| ')[[1]][2]
+  return(make_data(ps=data,test_var = test_var,test_baseline = test_baseline,formula_covariates = formula_covariates,sub_var = sub_var))
 }
 
 
