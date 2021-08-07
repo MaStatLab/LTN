@@ -539,7 +539,12 @@ make_data=function(ps,test_var,test_baseline,formula_covariates,sub_var){
   sub_id=as.numeric(as.factor(as.matrix(sampdat[,sub_var])))
   G=max(sub_id)
   Xtest=matrix(as.numeric(sampdat[,test_var]!=test_baseline),ncol=1)
-  Xadjust=stats::model.matrix(formula_covariates,data.frame(sampdat))
+  if(!is.null(formula_covariates)){
+      Xadjust=stats::model.matrix(formula_covariates,data.frame(sampdat))
+  }
+  else{
+    Xadjust=NULL
+  }
   return(list(cnt=cnt,Xtest=Xtest,Xadjust=Xadjust,grouplabel=sub_id,g=G,tree=tree))
 }
 
@@ -652,7 +657,11 @@ makeDataParser=function(formula,data,test_baseline){
   term=attributes(stats::terms(formula))$term.labels
   isRandomEffect=grepl("\\|",term)
   test_var=term[1]
-  formula_covariates=paste0(term[!isRandomEffect],collapse = '+')
+  if(sum(!isRandomEffect)==1){
+    formula_covariates=NULL
+  }else{
+      formula_covariates=paste0(term[!isRandomEffect][-1],collapse = '+')
+  }
   if (sum(isRandomEffect)>1){
     warning('More than one random effects. Used the first one.')
   }
