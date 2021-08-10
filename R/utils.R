@@ -573,7 +573,9 @@ plot_pmap=function(pmap,tree,main.text,alpha=NULL,label=NULL,label_nodes=NULL){
     label[label_nodes]=paste0('A',1:length(label_nodes))
     ape::nodelabels(text=label,frame='none',cex=1.2)
   }
-  if (!is.null(alpha)){
+  if (is.null(alpha)){
+      alpha=rep(0,K-1)
+  }
     edges=data.frame(tree$edge)
     edges$leftSign=''
     edges$rightSign=''
@@ -589,7 +591,6 @@ plot_pmap=function(pmap,tree,main.text,alpha=NULL,label=NULL,label_nodes=NULL){
     }
     ape::edgelabels(text=edges$leftSign,frame='none',cex=1.2,adj = 1)
     ape::edgelabels(text=edges$rightSign,frame='none',cex=1.2,adj = -0.2)
-  }
   legend_image <- grDevices::as.raster(matrix(col_Pal(500), ncol=1))
   graphics::image(z=t(1:500), col=legend_image, axes=FALSE)
   graphics::mtext('PMAP',side=3,cex=1)
@@ -661,7 +662,7 @@ makeDataParser=function(formula,data,test_baseline){
   if(sum(!isRandomEffect)==1){
     formula_covariates=NULL
   }else{
-      formula_covariates=as.formula(paste0('~',paste0(term[!isRandomEffect][-1],collapse = '+')))
+      formula_covariates=stats::as.formula(paste0('~',paste0(term[!isRandomEffect][-1],collapse = '+')))
   }
   if (sum(isRandomEffect)>1){
     warning('More than one random effects. Used the first one.')
