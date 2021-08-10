@@ -1,4 +1,4 @@
 library(testthat)
-library(LTNpkg)
+library(LTN)
 
-test_check("LTNpkg")
+test_check("LTN")
