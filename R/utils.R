@@ -556,7 +556,7 @@ make_data=function(ps,test_var,test_baseline,formula_covariates,sub_var){
 #' @param label labels of internal nodes
 #' @param label_nodes a set of k nodes to be labelled by A1, ..., Ak
 #' @export
-plot_pmap=function(pmap,tree,main.text,alpha=NULL,label=NULL,label_nodes=NULL){
+plot_pmap=function(pmap,tree,main.text,alpha=NULL,label=NULL,label_nodes=NULL,tip_label=NULL){
   col_Pal=grDevices::colorRampPalette(c('white', 'red'))
   graphics::layout(t(1:2), widths=c(96,4))
   graphics::par(mar=rep(0.5, 4), oma=c(1,0.5,2,2), las=1)
@@ -591,6 +591,9 @@ plot_pmap=function(pmap,tree,main.text,alpha=NULL,label=NULL,label_nodes=NULL){
     }
     ape::edgelabels(text=edges$leftSign,frame='none',cex=1.2,adj = 1)
     ape::edgelabels(text=edges$rightSign,frame='none',cex=1.2,adj = -0.2)
+    if (!is.null(tip_label)){
+      ape::tiplabels(tip_label,frame='none')
+    }
   legend_image <- grDevices::as.raster(matrix(col_Pal(500), ncol=1))
   graphics::image(z=t(1:500), col=legend_image, axes=FALSE)
   graphics::mtext('PMAP',side=3,cex=1)

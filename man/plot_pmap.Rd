@@ -10,7 +10,8 @@ plot_pmap(
   main.text,
   alpha = NULL,
   label = NULL,
-  label_nodes = NULL
+  label_nodes = NULL,
+  tip_label = NULL
 )
 }
 \arguments{
