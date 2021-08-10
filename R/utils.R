@@ -562,7 +562,12 @@ plot_pmap=function(pmap,tree,main.text,alpha=NULL,label=NULL,label_nodes=NULL,ti
   graphics::par(mar=rep(0.5, 4), oma=c(1,0.5,2,2), las=1)
   K=length(tree$tip.label)
   node_col = col_Pal(500)[as.numeric(cut(c((pmap),0,1), breaks = 500)) ]
-  graphics::plot(tree,main='',show.node.label=FALSE,direction="downwards",show.tip.label = FALSE,cex.main=1,use.edge.length=F,align.tip.label=T,node.depth=2)
+  if (is.null(tip_label)){
+    tree$tip.label=rep('',K)
+  }else{
+    tree$tip.label=tip_label
+  }
+  graphics::plot(tree,main='',show.node.label=FALSE,direction="downwards",show.tip.label = TRUE,cex.main=1,use.edge.length=F,align.tip.label=T,node.depth=2)
   graphics::mtext(main.text,side=3,cex=2.5)
   ape::nodelabels(bg=node_col,frame='none',cex=3,pch=21,col ='black')
   if (!is.null(label)){
@@ -591,9 +596,8 @@ plot_pmap=function(pmap,tree,main.text,alpha=NULL,label=NULL,label_nodes=NULL,ti
     }
     ape::edgelabels(text=edges$leftSign,frame='none',cex=1.2,adj = 1)
     ape::edgelabels(text=edges$rightSign,frame='none',cex=1.2,adj = -0.2)
-    if (!is.null(tip_label)){
-      ape::tiplabels(tip_label,frame='none')
-    }
+
+    ape::tiplabels(tip_label,frame='none')
   legend_image <- grDevices::as.raster(matrix(col_Pal(500), ncol=1))
   graphics::image(z=t(1:500), col=legend_image, axes=FALSE)
   graphics::mtext('PMAP',side=3,cex=1)
