@@ -596,8 +596,6 @@ plot_pmap=function(pmap,tree,main.text,alpha=NULL,label=NULL,label_nodes=NULL,ti
     }
     ape::edgelabels(text=edges$leftSign,frame='none',cex=1.2,adj = 1)
     ape::edgelabels(text=edges$rightSign,frame='none',cex=1.2,adj = -0.2)
-
-    ape::tiplabels(tip_label,frame='none')
   legend_image <- grDevices::as.raster(matrix(col_Pal(500), ncol=1))
   graphics::image(z=t(1:500), col=legend_image, axes=FALSE)
   graphics::mtext('PMAP',side=3,cex=1)
