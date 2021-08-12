@@ -9,9 +9,9 @@ gibbs_ltn(data = NULL, Y = NULL, YL = NULL, lambda = 10, niter, SEED = 1)
 \arguments{
 \item{data}{phyloseq object containing OTU table and phylogenetic tree}
 
-\item{Y}{(numeric) matrix of y_i(A). Y and YL will be used if the phyloseq object is not provided}
+\item{Y}{(numeric) n*d matrix of y_i(A). Y and YL will be used if the phyloseq object is not provided}
 
-\item{YL}{(numeric) matrix of y_i(A_l)}
+\item{YL}{(numeric) n*d matrix of y_i(A_l)}
 
 \item{lambda}{shrinkage parameter in graphical lasso prior}
 
