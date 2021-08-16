@@ -174,7 +174,7 @@ gibbs_crossgroup = function(N,
   ACC1 = rep(0, niter)
   ACC2 = rep(0, niter)
   for (it in 2:niter) {
-    print(it)
+    #print(it)
     if (reff) {
       # update gam
       if (reffcov == 1) {
