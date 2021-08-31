@@ -1,40 +1,21 @@
 #' Gibbs sampler for cross-group comparison
-# N -- number of samples
-# p -- number of internal nodes
-# g -- number of levels of the random effect. e.g., if the random effect is individual, then g is number of individuals
-# r -- pre-specified number of factors. unwarranted feature.
-#' @param Y -- (numeric) N*p, pre-order
-# Xtest -- N*q1 design [matrix] of the covariate to test, q1 should be [the number of groups-1]. If do not -1, will have 2 beta's for a two-group comparison, and need to test the difference!
-# Xadjust -- N*q2 design [matrix] of the covariate to adjust, should include a column of 1's
-# refflabel -- vector of random effect labels with length g. For example, patient ID.
-# c0,d0,c1,d1,nu -- hyperparameters
-# niter -- number of Gibbs iterations
-# SEED -- random seed for initialization
-# save_alpha_only -- T/F, whether to only save alpha. If T, will save huge amount of memory.
-# gprior_m -- Var(beta2)=mN(X^TX)^-1, gprior_m=1 implies unit information prior
-# OUTPUT:
-# **All in the same order as nodes**
-# ALPHA -- list, samples of r*p factor loading matrices
-# BETA1 -- list, samples of q1*p regression coefficients for testing
-# BETA2 -- list, samples of q2*p regression coefficients for adjusting
-# Z -- list, samples of [N*r] latent factors (in each iteration it's r*N)
-# GAM -- list, samples of [p*g] random effects
-# PSI -- list, samples of [N*p] psi's (in each iteration it's p*N)
-# PHI_EPS -- p*niter, samples of phi_epsilon's
-# PHI_GAM -- p*niter, samples of phi_gamma's
-# PHI_PI -- q1*niter, samples of phi_pi's
-# ACC1, ACC2 -- vectors of whether the new samples are accepted in MH steps
-# PI1 -- list, samples of q1*p inclusion probabilities of beta1
-# OMEGA2
-# LAM2
-# HYPERPARAMETERS:
-# aj, mj
-# t0=1, u0=0.001 -- $\phi_{beta_j}=\sim Ga(t,u)$, denoted as phi_pi in code
-# reffcov -- 1: diagonal, 2: sparse inverse covariance
-# a1,a2 -- hyperparameter in prior on factor loadings.
-#           Dunson (2011) requires a2>b2+1 where delta2~Ga(a2,b2), and a2>3,a1>2
-#           if a1a2=='hp', these values of a1,a2 here will not be used.
-# a1a2 -- hp: use Ga(2,1) hyperprior on a1,a2; fix: fix a1, a2
+#' @description A more flexible version of `ltnme` that allows users to change all hyperparameter specifications in the LTN-based mixed-effects model
+#' @param N number of samples
+#' @param p number of internal nodes
+#' @param g number of levels of the random effect. e.g., if the random effect is individual, then g is number of individuals
+#' @param r number of latent factors (unwarranted feature)
+#' @param Y N*d matrix of y(A)
+#' @param Xtest N*q1 design matrix of the covariate to test, q1 should be the number of groups-1. For the two-group problem, Xtest is a column vector.
+#' @param Xadjust N*q2 design matrix of the covariate to adjust, should include a column of 1's
+#' @param refflabel vector of random effect labels with length g, e.g., subject ID.
+#' @param c0,d0,c1,d1,nu hyperparameters
+#' @param niter number of Gibbs iterations
+#' @param SEED random seed for initializing parameters
+#' @param save_alpha_only whether to only return posterior samples of alpha(A)
+#' @param gprior_m Var(beta2)=mN(X^TX)^-1, gprior_m=1 implies unit information prior
+#' @param a1,a2 hyperparameters in prior on factor loadings (unwarranted feature)
+#' @param a1a2 'hp': use Ga(2,1) hyperprior on a1,a2; 'fix': fix a1, a2
+#' @param lambda_fixed if >0, use this as the fixed value of lambda; if <=0, adopt a Gamma hyperprior on lambda
 #' @export
 gibbs_crossgroup = function(N,
                             p,

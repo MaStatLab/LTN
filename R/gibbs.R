@@ -1,10 +1,10 @@
 
-#' Gibbs sampler for LTN
+#' Gibbs sampler for posterior inference of LTN with sparse Gaussian graph of nodes
 #' @param data phyloseq object containing OTU table and phylogenetic tree
 #' @param Y (numeric) n*d matrix of y_i(A). Y and YL will be used if the phyloseq object is not provided
 #' @param YL (numeric) n*d matrix of y_i(A_l)
 #' @param niter number of Gibbs iterations
-#' @param SEED random seed used in initializing the sampler
+#' @param SEED random seed for initializing the parameters
 #' @param lambda shrinkage parameter in graphical lasso prior
 #' @export
 gibbs_ltn=function(data=NULL,Y=NULL,YL=NULL,lambda=10,niter,SEED=1){

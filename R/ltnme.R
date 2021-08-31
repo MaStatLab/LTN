@@ -1,7 +1,15 @@
-#' LTN-based mixed-effects model
-#' @param reffcov 1: diagonal, 2: sparse
-#' @param pnull prior probability of the null hypothesis
-#' @param save_alpha_only whether to return posterior samples of only alpha(A)
+#' Gibbs sampler for LTN-based mixed-effects model
+#' @description a wrapper for `gibbs_crossgroup`
+#' @param formula a lme4 type formula where the first fixed effect is the group indicator
+#' @param data a phyloseq object
+#' @param test_baseline the group to be used as baseline in the linear model
+#' @param niter number of Gibbs iterations
+#' @param reffcov specification of the precision matrix of random effects. 1: diagonal, 2: sparse with graphical lasso prior
+#' @param SEED random seed for initializing the parameters
+#' @param gprior_m hyperparameter in prior of beta with default value 100
+#' @param pnull prior probability of the joint null hypothesis with default value 0.5
+#' @param lambda shrinkage parameter in the graphical lasso prior with default value 10
+#' @param save_alpha_only whether to only return posterior samples of alpha(A)
 #' @export
 ltnme = function(formula,
                  data,

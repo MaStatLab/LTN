@@ -34,8 +34,38 @@ gibbs_crossgroup(
 )
 }
 \arguments{
-\item{Y}{-- (numeric) N*p, pre-order}
+\item{N}{number of samples}
+
+\item{p}{number of internal nodes}
+
+\item{g}{number of levels of the random effect. e.g., if the random effect is individual, then g is number of individuals}
+
+\item{r}{number of latent factors (unwarranted feature)}
+
+\item{Y}{N*d matrix of y(A)}
+
+\item{Xtest}{N*q1 design matrix of the covariate to test, q1 should be the number of groups-1. For the two-group problem, Xtest is a column vector.}
+
+\item{Xadjust}{N*q2 design matrix of the covariate to adjust, should include a column of 1's}
+
+\item{c0, d0, c1, d1, nu}{hyperparameters}
+
+\item{niter}{number of Gibbs iterations}
+
+\item{SEED}{random seed for initializing parameters}
+
+\item{save_alpha_only}{whether to only return posterior samples of alpha(A)}
+
+\item{gprior_m}{Var(beta2)=mN(X^TX)^-1, gprior_m=1 implies unit information prior}
+
+\item{a1, a2}{hyperparameters in prior on factor loadings (unwarranted feature)}
+
+\item{a1a2}{'hp': use Ga(2,1) hyperprior on a1,a2; 'fix': fix a1, a2}
+
+\item{lambda_fixed}{if >0, use this as the fixed value of lambda; if <=0, adopt a Gamma hyperprior on lambda}
+
+\item{refflabel}{vector of random effect labels with length g, e.g., subject ID.}
 }
 \description{
-Gibbs sampler for cross-group comparison
+A more flexible version of \code{ltnme} that allows users to change all hyperparameter specifications in the LTN-based mixed-effects model
 }

@@ -7,5 +7,5 @@
 add_pseudo(mat)
 }
 \description{
-add 0.5 pseudo count
+add 0.5 pseudo count to 0 counts
 }

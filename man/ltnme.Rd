@@ -2,7 +2,7 @@
 % Please edit documentation in R/ltnme.R
 \name{ltnme}
 \alias{ltnme}
-\title{LTN-based mixed-effects model}
+\title{Gibbs sampler for LTN-based mixed-effects model}
 \usage{
 ltnme(
   formula,
@@ -18,12 +18,26 @@ ltnme(
 )
 }
 \arguments{
-\item{reffcov}{1: diagonal, 2: sparse}
+\item{formula}{a lme4 type formula where the first fixed effect is the group indicator}
 
-\item{save_alpha_only}{whether to return posterior samples of only alpha(A)}
+\item{data}{a phyloseq object}
 
-\item{pnull}{prior probability of the null hypothesis}
+\item{test_baseline}{the group to be used as baseline in the linear model}
+
+\item{niter}{number of Gibbs iterations}
+
+\item{reffcov}{specification of the precision matrix of random effects. 1: diagonal, 2: sparse with graphical lasso prior}
+
+\item{SEED}{random seed for initializing the parameters}
+
+\item{save_alpha_only}{whether to only return posterior samples of alpha(A)}
+
+\item{gprior_m}{hyperparameter in prior of beta with default value 100}
+
+\item{pnull}{prior probability of the joint null hypothesis with default value 0.5}
+
+\item{lambda}{shrinkage parameter in the graphical lasso prior with default value 10}
 }
 \description{
-LTN-based mixed-effects model
+a wrapper for \code{gibbs_crossgroup}
 }

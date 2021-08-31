@@ -5,12 +5,22 @@
 \title{generate data from DTM}
 \usage{
 dtm_sim(nsim, tree, theta, tau, total)
+
+dtm_sim(nsim, tree, theta, tau, total)
 }
 \arguments{
-\item{theta}{DTM mean, preorder}
+\item{nsim}{number of samples}
 
-\item{tau}{DTM dispersion parameter, preorder}
+\item{tree}{DT tree}
+
+\item{theta}{DT mean}
+
+\item{tau}{DT dispersion parameter}
+
+\item{total}{total counts in each sample}
 }
 \description{
 generate data from DTM
+
+sample from DTM
 }

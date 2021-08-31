@@ -2,10 +2,17 @@
 % Please edit documentation in R/utils.R
 \name{clrcov_sim}
 \alias{clrcov_sim}
-\title{clr covariance of compositions generated from DTM}
+\title{clr covariance of compositions generated from LTN}
 \usage{
 clrcov_sim(mu, sigma, tree, iter)
 }
+\arguments{
+\item{mu, sigma}{paramters of LTN}
+
+\item{tree}{phylogenetic tree}
+
+\item{iter}{number of Monte Carlo samples}
+}
 \description{
-clr covariance of compositions generated from DTM
+clr covariance of compositions generated from LTN
 }

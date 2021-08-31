@@ -6,6 +6,19 @@
 \usage{
 clrcov_dtm_sim_log(nsim, tree, theta, tau, SSS = 1, savesamp = F, dir = NULL)
 }
+\arguments{
+\item{nsim}{number of Monte Carlo samples}
+
+\item{tree}{phylogenetic tree}
+
+\item{theta, tau}{parameters of the DT distribution}
+
+\item{SSS}{random seed}
+
+\item{savesamp}{whether to save the Monte Carlo samples}
+
+\item{dir}{if \code{savesamp}, the directory to save the Monte Carlo samples}
+}
 \description{
 clr covariance of compositions generated from DTM
 }

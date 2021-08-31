@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{seqtab2y}
 \alias{seqtab2y}
-\title{transform OTU counts to node counts (without nodemat, not very effective)}
+\title{transform OTU counts to node counts}
 \usage{
 seqtab2y(seqtab, tree, preorder = F)
 }
@@ -13,11 +13,6 @@ seqtab2y(seqtab, tree, preorder = F)
 
 \item{preorder}{-- whether the OTUs are ordered according to the preorder traversal of the tree}
 }
-\value{
-Y -- {y(A): A is internal node}, nodes are ordered according to the preorder traversal of the tree
-
-YL -- {y(A_l): A is internal node}, nodes are ordered according to the preorder traversal of the tree
-}
 \description{
-transform OTU counts to node counts (without nodemat, not very effective)
+transform OTU counts to node counts
 }

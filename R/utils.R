@@ -1,5 +1,11 @@
 
 #' clr covariance of compositions generated from DTM
+#' @param nsim number of Monte Carlo samples
+#' @param tree phylogenetic tree
+#' @param theta,tau parameters of the DT distribution
+#' @param SSS random seed
+#' @param savesamp whether to save the Monte Carlo samples
+#' @param dir if `savesamp`, the directory to save the Monte Carlo samples
 #' @export
 clrcov_dtm_sim_log=function(nsim,tree,theta,tau,SSS=1,savesamp=F,dir=NULL){
   set.seed(SSS)
@@ -37,7 +43,10 @@ theta2p_log=function(theta_vec,nam,nodemat){
   return(leafp)
 }
 
-#' clr covariance of compositions generated from DTM
+#' clr covariance of compositions generated from LTN
+#' @param mu,sigma paramters of LTN
+#' @param  tree phylogenetic tree
+#' @param iter number of Monte Carlo samples
 #' @export
 clrcov_sim=function(mu,sigma,tree,iter){
   rt=data.tree::as.Node(tree)
@@ -70,6 +79,7 @@ psi2p=function(psi_vec,nam,nodemat){
 }
 
 #' matrix loss
+#' @description The Frobenius, L1, L_infinity, spectral norm of the matrix `diff`
 #' @export
 matloss=function(diff){
   frob=sqrt(sum(diff^2))
@@ -80,6 +90,7 @@ matloss=function(diff){
 }
 
 #' add 0.5 pseudo count
+#' @description add 0.5 pseudo count to 0 counts
 #' @export
 add_pseudo=function(mat){
   mat[which(mat==0)]=0.5
@@ -103,8 +114,11 @@ node_binom=function(x) {
 }
 
 #' generate data from DTM
-#' @param theta DTM mean, preorder
-#' @param tau DTM dispersion parameter, preorder
+#' @param nsim number of samples
+#' @param tree DTM tree
+#' @param theta DTM mean
+#' @param tau DTM dispersion parameter
+#' @param total the total counts
 #' @export
 dtm_sim=function(nsim,tree,theta,tau,total){
   p=length(theta)
@@ -143,145 +157,6 @@ leaf2nodeprob=function(leafprob,tree){
   return(list(node_prob=node_prob,left_prob=left_prob))
 }
 
-# gibbs_glasso_cnt=function(niter,cnt,tree,r=1,s=0.01,SSS=1){
-#   #initialization
-#   set.seed(SSS)
-#   LAM=rep(0,niter)
-#   lambda=stats::rgamma(1,r,s)
-#   LAM[1]=lambda
-#   yyl=apply(cnt,1, function(x) {count2y(x,tree)})
-#   Y=t(do.call(rbind,lapply(yyl, function(x){x[['Y']]})))
-#   YL=t(do.call(rbind,lapply(yyl, function(x){x[['YL']]})))
-#   nsim=ncol(Y)
-#   kappa=NULL
-#   for (i in 1:nsim){
-#     kappa=cbind(kappa,YL[,i]-Y[,i]/2)
-#   }
-#   p=nrow(Y)
-#   PHI=diag(rep(1,p))
-#   OMEGA=list()
-#   set.seed(SSS)
-#   OMEGA[[1]]=stats::rWishart(1,p+2,PHI)[,,1]
-#   omega=OMEGA[[1]]
-#   TAU=list()
-#   tau=matrix(0,nrow=p,ncol=p)
-#   set.seed(SSS)
-#   for (l in 2:p){
-#     for (k in 1:(l-1)){
-#       mu_prime=sqrt(lambda^2/omega[k,l]^2)
-#       ukl=statmod::rinvgauss(1, mu_prime, lambda^2)
-#       tau[k,l]=1/ukl
-#       tau[l,k]=1/ukl
-#     }
-#   }
-#   TAU[[1]]=tau
-#   PSI=list()
-#   set.seed(SSS)
-#   psi=matrix(0,ncol = ncol(Y),nrow=nrow(Y))
-#   for (i in 1:nrow(Y)){
-#     for (j in 1:ncol(Y)){
-#       if (Y[i,j]==0){
-#         psi[i,j]=0
-#       }
-#       else{
-#         tmp=YL[i,j]/Y[i,j]
-#         if (tmp==0){
-#           psi[i,j]=-5
-#         }
-#         else{
-#           if (tmp==1){
-#             psi[i,j]=5
-#           }
-#           else{
-#             psi[i,j]=stats::qlogis(tmp)
-#           }
-#         }
-#       }
-#     }
-#   }
-#   PSI[[1]]=psi
-#   Lam=diag(rep(5,p))
-#   Z=list()
-#   z=matrix(0,ncol=nsim,nrow=p)
-#   set.seed(SSS)
-#   for (i in 1:nsim){
-#     for (j in 1:p){
-#       if (Y[j,i]!=0){
-#         z[j,i]=BayesLogit::rpg(1,Y[j,i],0)
-#       }
-#     }
-#   }
-#   Z[[1]]=z
-#   set.seed(SSS)
-#   MU=matrix(0,ncol = niter,nrow=p)
-#   Lam=diag(rep(5,p))
-#   #gibbs sampling
-#   for (it in 2:niter){
-#     lambda=LAM[it-1]
-#     omega=OMEGA[[it-1]]
-#     psi=PSI[[it-1]]
-#     tau=TAU[[it-1]]
-#     mu=MU[,it-1]
-#     #update z
-#     z=matrix(0,ncol=nsim,nrow=p)
-#     for (i in 1:nsim){
-#       for (j in 1:p){
-#         if (Y[j,i]!=0){ #only update nodes with non-zero y_i(A)
-#           z[j,i]=BayesLogit::rpg(1,Y[j,i],psi[j,i])
-#         }
-#       }
-#     }
-#     Z[[it]]=z
-#     #update psi
-#     psi=matrix(0,ncol = nsim,nrow=p)
-#     for (i in 1:nsim){
-#       cov_mat=solve(omega+diag(z[,i]))
-#       mean_vec=cov_mat%*%(omega%*%mu+kappa[,i])
-#       psi[,i]=mvtnorm::rmvnorm(1,mean_vec,cov_mat)
-#     }
-#     PSI[[it]]=psi
-#     #update mu
-#     cov_mat=solve(solve(Lam)+nsim*omega)
-#     mean_vec=cov_mat%*%omega%*%apply(psi,1,sum)
-#     MU[,it]=mvtnorm::rmvnorm(1,mean_vec,cov_mat)
-#     mu=MU[,it]
-#     #update omega and tau together (blocked gibbs)
-#     psi_diff=psi-matrix(rep(mu,nsim),ncol=nsim,byrow=F)
-#     S=psi_diff%*%t(psi_diff)
-#     #step1
-#     for (k in 1:p){
-#       #(b)
-#       s22=S[k,k]
-#       gam=stats::rgamma(1,nsim/2+1,(s22+lambda)/2)
-#       Dtau=diag(tau[-k,k])
-#       omega11=omega[-k,-k]
-#       C=solve((s22+lambda)*solve(omega11)+solve(Dtau))
-#       s21=S[-k,k]
-#       beta_mean=-C%*%s21
-#       be=mvtnorm::rmvnorm(1,beta_mean,C)
-#       #(c)
-#       omega[-k,k]=be
-#       omega[k,-k]=t(be)
-#       omega[k,k]=gam+be%*%solve(omega[-k,-k])%*%t(be)
-#     }
-#     # step2
-#     for (l in 2:p){
-#       for (k in 1:(l-1)){
-#         mu_prime=sqrt(lambda^2/omega[k,l]^2)
-#         ukl=statmod::rinvgauss(1, mu_prime, lambda^2)
-#         tau[k,l]=1/ukl
-#         tau[l,k]=1/ukl
-#       }
-#     }
-#     OMEGA[[it]]=omega
-#     TAU[[it]]=tau
-#     # update lambda
-#     lambda=stats::rgamma(1,r+p*(p+1)/2,s+sum(abs(omega))/2)
-#     LAM[it]=lambda
-#     print(it)
-#   }
-#   return(list(OMEGA=OMEGA,LAM=LAM,MU=MU))
-# }
 
 #' clr covariance of compositions generated from LTN(mu,sigma)
 #' @export
@@ -324,6 +199,7 @@ rbeta_log=function(nmc,a,b){
 }
 
 #' transform log-odds to compositions
+#' @description helper function
 #' @export
 psi2p_log=function(psi_vec,nam,nodemat){
   nodep=c(psi_vec-log(1+exp(psi_vec)),log(1-stats::plogis(psi_vec)),0)
@@ -334,12 +210,10 @@ psi2p_log=function(psi_vec,nam,nodemat){
 
 
 
-#' transform OTU counts to node counts (without nodemat, not very effective)
+#' transform OTU counts to node counts
 #' @param seqtab OTU table
 #' @param tree -- phylogenetic tree
 #' @param preorder -- whether the OTUs are ordered according to the preorder traversal of the tree
-#' @return Y -- {y(A): A is internal node}, nodes are ordered according to the preorder traversal of the tree
-#' @return YL -- {y(A_l): A is internal node}, nodes are ordered according to the preorder traversal of the tree
 #' @export
 seqtab2y=function(seqtab,tree,preorder=F){
   K=length(tree$tip.label)
@@ -357,7 +231,7 @@ seqtab2y=function(seqtab,tree,preorder=F){
   return(list(Y=Y,YL=YL))
 }
 
-#' count vector to y and yl
+#' transform count vector to y(A) and y(Al)
 #' @param cnt a row of OTU table (preorder)
 #' @param tree phylogenetic tree
 count2y=function(cnt,tree){
@@ -380,10 +254,8 @@ count2y=function(cnt,tree){
 
 
 #' MoM estimate of Dirichlet Multinomial
-#' X_i|q_i ~ Multi(N_i,q_i)
-#' q_i ~ Dir(v*pi)
-#' theta=1/(1+v)
-#' For beta-binomials in DTM, K=2
+#' @description Method-of-moments estimates of the DM model
+#' @description X_i|q_i ~ Multi(N_i,q_i), q_i ~ Dir(v*pi), theta=1/(1+v)
 #' @param X n samples * K categories counts
 #' @export
 dm_mom=function(X){
@@ -398,6 +270,12 @@ dm_mom=function(X){
   vhat=1/thetahat-1
   return(list(pihat=pihat,thetahat=thetahat,vhat=vhat))
 }
+#' sample from DTM
+#' @param nsim number of samples
+#' @param tree DT tree
+#' @param theta DT mean
+#' @param tau DT dispersion parameter
+#' @param total total counts in each sample
 #' @export
 dtm_sim=function(nsim,tree,theta,tau,total){
   p=length(theta)
@@ -419,6 +297,8 @@ dtm_sim=function(nsim,tree,theta,tau,total){
   }
   return(list(Y=Y,YL=YL,cnt=cnt))
 }
+#' binomial experiment at a node
+#' @description helper function
 #' @export
 node_binom=function(x) {
   leftchild=names(x$children[1])
@@ -431,6 +311,9 @@ node_binom=function(x) {
 }
 
 #' MoM estimate of DTM at each node
+#' @param cnt OTU counts
+#' @param tree DT tree
+#' @param add_pseudo whether to add 0.5 pseudo counts to 0
 #' @export
 dtm_mom=function(cnt,tree,add_pseudo=T){
   if (add_pseudo){
@@ -522,9 +405,13 @@ tax_tree=function(taxtab){
   return(phylotree)
 }
 
-
-
-#' make data for application
+#' make data for two-group comparison
+#' @description helper function
+#' @param ps phyloseq object
+#' @param test_var the variable that defines the two contrasting groups
+#' @param test_baseline the baseline group in the mixed effects model
+#' @param formula_covariates formula of other fixed effects to be adjusted
+#' @param sub_var random effects
 #' @export
 make_data=function(ps,test_var,test_baseline,formula_covariates,sub_var){
   cnt=phyloseq::otu_table(ps)

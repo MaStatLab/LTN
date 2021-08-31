@@ -1,14 +1,12 @@
 
-# INPUT:
-# niter -- number of Gibbs iterations
-# Y,YL -- p x N
-# r,s: hyperparameters for shrinkage parameter lambda. lambda ~ Ga(r,s). The default choice is from Wang (2012).
-# SEED: random seed
-# lambda: 'hp' -- the Gamma hyperprior will be used; or a real number used as a fixed lambda, and r and s will be ignored
-# OUTPUT:
-# OMEGA: list of posterior samples of precision matrix Omega (pre-order of nodes)
-# MU: p * niter, each column is a posterior sample of mu (pre-order of nodes)
-# LAM: posterior samples of lambda
+#' Gibbs sampler for posterior inference of LTN with sparse Gaussian graph of nodes
+#' @param niter number of Gibbs iteration
+#' @param Y d x N matrices of y(A)
+#' @param YL d x N matrices of y(Al)
+#' @param r hyperparameter for shrinkage parameter lambda. lambda ~ Ga(r,s).
+#' @param s hyperparameter for shrinkage parameter lambda. lambda ~ Ga(r,s).
+#' @param SEED random seed for initializing the parameters
+#' @param lambda 'hp' -- the Gamma hyperprior will be used; or a real number used as a fixed lambda, and r and s will be ignored
 gibbs_glasso=function(niter,YL,Y,r=1,s=0.01,SEED=1,lambda='hp'){
   #initialization
   set.seed(SEED)

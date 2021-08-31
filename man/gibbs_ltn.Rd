@@ -2,7 +2,7 @@
 % Please edit documentation in R/gibbs.R
 \name{gibbs_ltn}
 \alias{gibbs_ltn}
-\title{Gibbs sampler for LTN}
+\title{Gibbs sampler for posterior inference of LTN with sparse Gaussian graph of nodes}
 \usage{
 gibbs_ltn(data = NULL, Y = NULL, YL = NULL, lambda = 10, niter, SEED = 1)
 }
@@ -17,8 +17,8 @@ gibbs_ltn(data = NULL, Y = NULL, YL = NULL, lambda = 10, niter, SEED = 1)
 
 \item{niter}{number of Gibbs iterations}
 
-\item{SEED}{random seed used in initializing the sampler}
+\item{SEED}{random seed for initializing the parameters}
 }
 \description{
-Gibbs sampler for LTN
+Gibbs sampler for posterior inference of LTN with sparse Gaussian graph of nodes
 }

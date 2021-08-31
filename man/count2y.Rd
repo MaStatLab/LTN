@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{count2y}
 \alias{count2y}
-\title{count vector to y and yl}
+\title{transform count vector to y(A) and y(Al)}
 \usage{
 count2y(cnt, tree)
 }
@@ -12,5 +12,5 @@ count2y(cnt, tree)
 \item{tree}{phylogenetic tree}
 }
 \description{
-count vector to y and yl
+transform count vector to y(A) and y(Al)
 }

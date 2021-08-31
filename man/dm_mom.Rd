@@ -2,11 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{dm_mom}
 \alias{dm_mom}
-\title{MoM estimate of Dirichlet Multinomial
-X_i|q_i ~ Multi(N_i,q_i)
-q_i ~ Dir(v*pi)
-theta=1/(1+v)
-For beta-binomials in DTM, K=2}
+\title{MoM estimate of Dirichlet Multinomial}
 \usage{
 dm_mom(X)
 }
@@ -14,9 +10,7 @@ dm_mom(X)
 \item{X}{n samples * K categories counts}
 }
 \description{
-MoM estimate of Dirichlet Multinomial
-X_i|q_i ~ Multi(N_i,q_i)
-q_i ~ Dir(v*pi)
-theta=1/(1+v)
-For beta-binomials in DTM, K=2
+Method-of-moments estimates of the DM model
+
+X_i|q_i ~ Multi(N_i,q_i), q_i ~ Dir(v*pi), theta=1/(1+v)
 }

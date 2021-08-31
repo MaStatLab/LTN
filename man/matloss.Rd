@@ -7,5 +7,5 @@
 matloss(diff)
 }
 \description{
-matrix loss
+The Frobenius, L1, L_infinity, spectral norm of the matrix \code{diff}
 }

@@ -6,6 +6,13 @@
 \usage{
 dtm_mom(cnt, tree, add_pseudo = T)
 }
+\arguments{
+\item{cnt}{OTU counts}
+
+\item{tree}{DT tree}
+
+\item{add_pseudo}{whether to add 0.5 pseudo counts to 0}
+}
 \description{
 MoM estimate of DTM at each node
 }
