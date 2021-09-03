@@ -11,5 +11,4 @@ devtools::install_github('MaStatLab/LTN')
 ```  
 
 ## Reference
-
-Wang Z, Mao J, and Ma L. (2021) Logistic-tree normal model for microbiome compositions. https://arxiv.org/abs/2106.15051
+Wang Z, Mao J, and Ma L. (2021) Microbiome compositional analysis with logistic-tree normal models. https://arxiv.org/abs/2106.15051
