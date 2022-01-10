@@ -42,7 +42,8 @@ gibbs_crossgroup = function(N,
                             a1=3,
                             a2=4,
                             a1a2='hp',
-                            lambda_fixed) {
+                            lambda_fixed,
+                           verbose = F) {
   # initialization
   set.seed(SEED)
   Y = t(Y)
@@ -155,7 +156,9 @@ gibbs_crossgroup = function(N,
   ACC1 = rep(0, niter)
   ACC2 = rep(0, niter)
   for (it in 2:niter) {
-    #print(it)
+    if (verbose){
+    print(it)
+    }
     if (reff) {
       # update gam
       if (reffcov == 1) {
