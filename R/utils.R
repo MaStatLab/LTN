@@ -90,7 +90,7 @@ matloss=function(diff){
 }
 
 #' add 0.5 pseudo count
-#' @description add 0.5 pseudo count to 0 counts
+#' @description add 0.5 pseudo count to zeros
 #' @export
 add_pseudo=function(mat){
   mat[which(mat==0)]=0.5
