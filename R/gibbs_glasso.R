@@ -7,7 +7,7 @@
 #' @param s hyperparameter for shrinkage parameter lambda. lambda ~ Ga(r,s).
 #' @param SEED random seed for initializing the parameters
 #' @param lambda 'hp' -- the Gamma hyperprior will be used; or a real number used as a fixed lambda, and r and s will be ignored
-gibbs_glasso=function(niter,YL,Y,r=1,s=0.01,SEED=1,lambda='hp'){
+gibbs_glasso=function(niter,YL,Y,r=1,s=0.01,SEED=1,lambda='hp',verbose=F){
   #initialization
   set.seed(SEED)
   LAM=rep(0,niter)
@@ -85,6 +85,7 @@ gibbs_glasso=function(niter,YL,Y,r=1,s=0.01,SEED=1,lambda='hp'){
   Lam=diag(rep(5,p))
   #gibbs sampling
   for (it in 2:niter){
+    if (verbose){print(it)}
     # print(it)
     lambda=LAM[it-1]
     omega=OMEGA[[it-1]]
