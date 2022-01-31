@@ -7,7 +7,7 @@
 #' @param SEED random seed for initializing the parameters
 #' @param lambda shrinkage parameter in graphical lasso prior
 #' @export
-gibbs_ltn=function(data=NULL,Y=NULL,YL=NULL,lambda=10,niter,SEED=1){
+gibbs_ltn=function(data=NULL,Y=NULL,YL=NULL,lambda=10,niter,SEED=1,verbose=F){
   if (!is.null(data)){
     # compute y(A) and y(Al)
     tree=phyloseq::phy_tree(data)
@@ -20,5 +20,5 @@ gibbs_ltn=function(data=NULL,Y=NULL,YL=NULL,lambda=10,niter,SEED=1){
     Y=do.call(rbind,lapply(yyl, function(x){x[['Y']]}))
     YL=do.call(rbind,lapply(yyl, function(x){x[['YL']]}))
   }
-  return(gibbs_glasso(niter=niter,YL=t(YL),Y=t(Y),r=1,s=0.01,SEED=SEED,lambda=lambda))
+  return(gibbs_glasso(niter=niter,YL=t(YL),Y=t(Y),r=1,s=0.01,SEED=SEED,lambda=lambda,verbose=verbose))
 }
